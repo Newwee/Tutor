@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TutorCode - Interactive Coding Learning Platform</title>
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6 CDN for clean tech icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Canvas Confetti CDN for Level Up & Victory Celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <!-- Application Shell -->
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo">
+          <div class="logo-icon-wrap">
+            <i class="fa-solid fa-code"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">TutorCode</span>
+            <span class="brand-badge">PRO</span>
+          </div>
+        </div>
+        <button class="sidebar-close-btn mobile-only" id="sidebar-close-btn" aria-label="Close menu">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- User Mini Card in Sidebar -->
+      <div class="sidebar-user-mini" id="sidebar-user-card">
+        <div class="user-avatar-mini" id="sidebar-user-avatar">🚀</div>
+        <div class="user-info-mini">
+          <div class="user-name-mini" id="sidebar-user-name">CodeVoyager</div>
+          <div class="user-role-badge" id="sidebar-user-role">Novice Coder</div>
+        </div>
+        <div class="user-level-pill" id="sidebar-user-level">LV 1</div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">MAIN MENU</div>
+        <a href="#dashboard" class="nav-link active" data-view="dashboard">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#learn" class="nav-link" data-view="learn">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Learn</span>
+          <span class="nav-badge" id="nav-badge-lessons">34 บท</span>
+        </a>
+        <a href="#challenges" class="nav-link" data-view="challenges">
+          <i class="fa-solid fa-puzzle-piece"></i>
+          <span>Challenges</span>
+          <span class="nav-badge hot" id="nav-badge-challenges">โจทย์ท้าทาย</span>
+        </a>
+        <a href="#languages" class="nav-link" data-view="languages">
+          <i class="fa-solid fa-cubes-stacked"></i>
+          <span>Languages</span>
+          <span class="nav-badge" id="nav-badge-langs">8 คอร์ส</span>
+        </a>
+        <a href="#leaderboard" class="nav-link" data-view="leaderboard">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Leaderboard</span>
+        </a>
+        <a href="#achievements" class="nav-link" data-view="achievements">
+          <i class="fa-solid fa-medal"></i>
+          <span>Achievements</span>
+        </a>
+
+        <div class="nav-section-label">ACCOUNT</div>
+        <a href="#profile" class="nav-link" data-view="profile">
+          <i class="fa-solid fa-circle-user"></i>
+          <span>Profile</span>
+        </a>
+        <a href="#settings" class="nav-link" data-view="settings">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer Stats -->
+      <div class="sidebar-footer">
+        <div class="sidebar-streak-box">
+          <div class="streak-icon">🔥</div>
+          <div class="streak-details">
+            <div class="streak-value" id="sidebar-streak-value">1 Day</div>
+            <div class="streak-sub">Daily Streak</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Navigation Bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn mobile-only" id="mobile-menu-btn" aria-label="Open navigation">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          
+          <!-- Quick Search Button -->
+          <button class="search-trigger-btn" id="search-trigger-btn" title="Search lessons, languages, and challenges (Ctrl+K)">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span class="search-placeholder">ค้นหาบทเรียน, ภาษา, หรือโจทย์...</span>
+            <kbd class="shortcut-key">Ctrl K</kbd>
+          </button>
+        </div>
+
+        <div class="header-right">
+          <!-- Sound Toggle -->
+          <button class="icon-action-btn" id="sound-toggle-btn" title="Toggle Sound FX">
+            <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+          </button>
+
+          <!-- Daily Streak Pill -->
+          <div class="streak-pill" id="header-streak-pill" title="Current Daily Streak">
+            <span class="fire-icon">🔥</span>
+            <span class="streak-num" id="header-streak-num">1</span>
+            <span class="streak-label">วัน</span>
+          </div>
+
+          <!-- Combo Multiplier Badge -->
+          <div class="combo-badge hidden" id="header-combo-badge" title="Active combo streak!">
+            <i class="fa-solid fa-bolt"></i>
+            <span id="header-combo-text">Combo ×1</span>
+          </div>
+
+          <!-- XP & Level Indicator -->
+          <div class="xp-level-container" id="header-xp-container" title="Click to view Level Progress">
+            <div class="level-indicator-pill" id="header-level-pill">
+              <i class="fa-solid fa-crown"></i>
+              <span id="header-level-text">LV 1</span>
+            </div>
+            <div class="xp-progress-compact">
+              <div class="xp-text-compact">
+                <span class="xp-curr" id="header-xp-curr">0</span> / 
+                <span class="xp-next" id="header-xp-next">350</span> XP
+              </div>
+              <div class="progress-track-compact">
+                <div class="progress-bar-compact" id="header-xp-bar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Trigger Button -->
+          <button class="header-profile-btn" id="header-profile-btn" title="View Profile">
+            <span class="header-avatar" id="header-avatar">🚀</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <main class="content-container">
+        
+        <!-- VIEW 1: DASHBOARD -->
+        <section class="view-panel active" id="view-dashboard">
+          <!-- Hero Gamification Banner -->
+          <div class="dashboard-hero-card">
+            <div class="hero-content">
+              <div class="hero-badge">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Gamified Coding Learning Experience</span>
+              </div>
+              <h1 class="hero-title">ยินดีต้อนรับสู่ <span class="gradient-text">TutorCode</span></h1>
+              <p class="hero-subtitle">เรียนรู้การเขียนโปรแกรมแบบ Interactive เขียนโค้ดจริง รับ XP ปลดล็อก Level และสะสม Achievements!</p>
+              
+              <div class="hero-actions">
+                <button class="btn btn-primary" id="dashboard-continue-btn">
+                  <i class="fa-solid fa-play"></i>
+                  <span id="dashboard-continue-text">เริ่มเรียนต่อ: Python บทที่ 1</span>
+                </button>
+                <button class="btn btn-outline" id="dashboard-browse-btn">
+                  <i class="fa-solid fa-cubes-stacked"></i>
+                  <span>เลือกภาษาโปรแกรม</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Level Card Widget -->
+            <div class="hero-level-widget">
+              <div class="level-ring-wrap">
+                <svg class="level-ring-svg" viewBox="0 0 120 120">
+                  <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+                  <circle class="ring-fill" id="dashboard-ring-fill" cx="60" cy="60" r="52"></circle>
+                </svg>
+                <div class="ring-content">
+                  <div class="ring-level-num" id="dashboard-level-num">1</div>
+                  <div class="ring-level-label">LEVEL</div>
+                </div>
+              </div>
+              <div class="level-rank-name" id="dashboard-rank-name">Beginner Coder</div>
+              <div class="level-xp-details">
+                <span id="dashboard-xp-current">0</span> / <span id="dashboard-xp-target">350</span> XP
+              </div>
+              <div class="level-sub-quote" id="dashboard-level-sub">อีก 350 XP เพื่อปลดล็อก Novice!</div>
+            </div>
+          </div>
+
+          <!-- Quick Metrics Grid -->
+          <div class="stats-metrics-grid">
+            <div class="stat-card">
+              <div class="stat-icon-wrap cyan">
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">Total Score</div>
+                <div class="stat-value" id="dash-stat-score">0</div>
+                <div class="stat-meta">+10 XP ต่อคำตอบที่ถูกต้อง</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrap orange">
+                <i class="fa-solid fa-fire"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">Daily Streak</div>
+                <div class="stat-value" id="dash-stat-streak">1 วัน</div>
+                <div class="stat-meta">เรียนต่อเนื่องเพื่อรับ Bonus XP</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrap emerald">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">Lessons Done</div>
+                <div class="stat-value" id="dash-stat-lessons">0 / 23</div>
+                <div class="stat-meta">ครอบคลุม 7 ภาษาโปรแกรม</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrap purple">
+                <i class="fa-solid fa-puzzle-piece"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">Challenges Solved</div>
+                <div class="stat-value" id="dash-stat-challenges">0 / 14</div>
+                <div class="stat-meta">โจทย์จำลองการทำงานจริง</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard Row: Daily Challenge & Continue Learning -->
+          <div class="dashboard-grid-2col">
+            <!-- Daily Challenge Card -->
+            <div class="dashboard-card daily-challenge-card">
+              <div class="card-header-flex">
+                <div class="card-title-group">
+                  <span class="special-badge"><i class="fa-solid fa-calendar-day"></i> DAILY CHALLENGE</span>
+                  <h3>โจทย์ประจำวัน</h3>
+                </div>
+                <div class="daily-reward-badge">+250 XP</div>
+              </div>
+              <div class="daily-content" id="daily-challenge-box">
+                <div class="daily-title" id="daily-title">หาค่าสูงสุดใน Array (Find Maximum)</div>
+                <p class="daily-desc" id="daily-desc">เขียนฟังก์ชันเพื่อหาค่าตัวเลขที่มีค่ามากที่สุดจากชุดตัวเลขที่กำหนดให้</p>
+                <div class="daily-tags">
+                  <span class="tag-pill lang-tag" id="daily-lang">Python</span>
+                  <span class="tag-pill diff-tag easy">Easy</span>
+                  <span class="tag-pill"><i class="fa-regular fa-clock"></i> รีเซ็ตทุกเที่ยงคืน</span>
+                </div>
+                <div class="daily-footer">
+                  <div class="daily-status" id="daily-status">
+                    <i class="fa-regular fa-circle"></i> ยังไม่ได้ทำ
+                  </div>
+                  <button class="btn btn-emerald btn-sm" id="btn-start-daily">
+                    <i class="fa-solid fa-code"></i> ท้าทายโจทย์วันนี้
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Language Progress -->
+            <div class="dashboard-card">
+              <div class="card-header-flex">
+                <div class="card-title-group">
+                  <span class="special-badge cyan"><i class="fa-solid fa-chart-line"></i> PROGRESS</span>
+                  <h3>ความคืบหน้าแต่ละภาษา</h3>
+                </div>
+                <a href="#languages" class="card-link" data-view="languages">ดูทั้งหมด <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+              <div class="language-progress-list" id="dashboard-lang-progress-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Lessons & Latest Achievements -->
+          <div class="dashboard-grid-2col">
+            <!-- Recommended Next Lessons -->
+            <div class="dashboard-card">
+              <div class="card-header-flex">
+                <div class="card-title-group">
+                  <span class="special-badge purple"><i class="fa-solid fa-book-open"></i> RECENT LESSONS</span>
+                  <h3>บทเรียนที่แนะนำถัดไป</h3>
+                </div>
+                <a href="#learn" class="card-link" data-view="learn">ไปที่ห้องเรียน <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+              <div class="recent-lessons-list" id="dashboard-recent-lessons">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Recent Achievements -->
+            <div class="dashboard-card">
+              <div class="card-header-flex">
+                <div class="card-title-group">
+                  <span class="special-badge gold"><i class="fa-solid fa-award"></i> ACHIEVEMENTS</span>
+                  <h3>ความสำเร็จล่าสุด</h3>
+                </div>
+                <a href="#achievements" class="card-link" data-view="achievements">ดูเหรียญรางวัล <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+              <div class="recent-achievements-list" id="dashboard-recent-achievements">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 2: LEARN / LESSON SYSTEM -->
+        <section class="view-panel" id="view-learn">
+          <div class="learn-workspace">
+            <!-- Course Curriculum Sidebar / Drawer -->
+            <aside class="curriculum-drawer" id="curriculum-drawer">
+              <div class="curriculum-header">
+                <div class="curriculum-lang-selector-wrap">
+                  <label for="curriculum-lang-select"><i class="fa-solid fa-cubes"></i> เลือกภาษา:</label>
+                  <select id="curriculum-lang-select" class="custom-select">
+                    <option value="python">06066303 การแก้ปัญหาและการโปรแกรมคอมพิวเตอร์ (Python 9 บท)</option>
+                    <option value="math_it">06016401 คณิตศาสตร์สำหรับ IT (Math for IT 7 บท)</option>
+                    <option value="c">C Language (3 บท)</option>
+                    <option value="cpp">C++ (3 บท)</option>
+                    <option value="csharp">C# (3 บท)</option>
+                    <option value="lua">Lua (3 บท)</option>
+                    <option value="java">Java (3 บท)</option>
+                    <option value="css">CSS (3 บท)</option>
+                  </select>
+                </div>
+                <div class="curriculum-stats">
+                  <span id="curriculum-progress-text">0 / 5 จบแล้ว</span>
+                  <div class="progress-track-sm">
+                    <div class="progress-bar-sm" id="curriculum-progress-bar" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lesson Items Tree -->
+              <div class="curriculum-list" id="curriculum-list">
+                <!-- Dynamically generated lesson list items -->
+              </div>
+            </aside>
+
+            <!-- Lesson Content & Interactive Editor Stage -->
+            <div class="lesson-stage">
+              <!-- Lesson Breadcrumb & Title Bar -->
+              <div class="lesson-title-bar">
+                <div class="lesson-meta-left">
+                  <div class="lesson-breadcrumbs" id="lesson-breadcrumbs">
+                    <span class="bc-lang">Python</span> <i class="fa-solid fa-chevron-right"></i> <span class="bc-chapter">บทที่ 1: Introduction & Variables</span>
+                  </div>
+                  <h2 class="lesson-main-heading" id="lesson-title">บทที่ 1: การประกาศตัวแปรและการแสดงผล</h2>
+                </div>
+                <div class="lesson-actions-right">
+                  <button class="btn btn-outline btn-sm" id="btn-prev-lesson"><i class="fa-solid fa-chevron-left"></i> ก่อนหน้า</button>
+                  <button class="btn btn-outline btn-sm" id="btn-next-lesson">ถัดไป <i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+              </div>
+
+              <!-- Main Split Area: Lesson Reading vs Interactive Editor -->
+              <div class="lesson-split-grid">
+                <!-- Left: Lesson Material & Practice Instructions -->
+                <div class="lesson-material-panel">
+                  <div class="lesson-card-section">
+                    <div class="section-title"><i class="fa-solid fa-circle-info"></i> คำอธิบายบทเรียน (Explanation)</div>
+                    <div class="lesson-body-text" id="lesson-explanation">
+                      <!-- Dynamically injected explanation -->
+                    </div>
+                  </div>
+
+                  <div class="lesson-card-section">
+                    <div class="section-title"><i class="fa-solid fa-code"></i> ตัวอย่างโค้ด (Code Example)</div>
+                    <div class="code-example-box">
+                      <pre><code id="lesson-code-example"># Code example will appear here</code></pre>
+                      <button class="copy-example-btn" id="copy-example-btn" title="คัดลอกโค้ดตัวอย่างไปยัง Editor">
+                        <i class="fa-regular fa-copy"></i> นำเข้า Editor
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="lesson-card-section practice-box">
+                    <div class="section-title"><i class="fa-solid fa-list-check"></i> แบบฝึกหัดในบท (Practice Task)</div>
+                    <div class="practice-instructions" id="lesson-practice-task">
+                      <!-- Practice description -->
+                    </div>
+                    <div class="expected-output-box" id="lesson-expected-box">
+                      <div class="exp-title">ผลลัพธ์ที่ต้องการ (Expected Output):</div>
+                      <code id="lesson-expected-output">Hello World</code>
+                    </div>
+                  </div>
+
+                  <!-- Complete Lesson CTA -->
+                  <div class="lesson-completion-card">
+                    <div class="completion-info">
+                      <div class="reward-tag"><i class="fa-solid fa-gift"></i> รางวัลบทเรียน: <span id="lesson-xp-reward">+50 XP</span></div>
+                      <div class="completion-sub">เขียนโค้ดและรันให้ได้ผลลัพธ์ที่ถูกต้องเพื่อรับคะแนน</div>
+                    </div>
+                    <button class="btn btn-emerald" id="btn-complete-lesson" disabled>
+                      <i class="fa-solid fa-circle-check"></i> ผ่านบทเรียนนี้ (Complete Lesson)
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Right: Interactive Code Editor -->
+                <div class="lesson-editor-panel">
+                  <div class="editor-header-bar">
+                    <div class="editor-info-tags">
+                      <span class="editor-lang-badge" id="editor-lang-badge">PYTHON</span>
+                      <span class="editor-bracket-badge" id="editor-bracket-badge" title="ตรวจสอบวงเล็บเปิด-ปิด">
+                        <i class="fa-solid fa-check"></i> วงเล็บสมบูรณ์
+                      </span>
+                    </div>
+                    
+                    <div class="editor-quick-actions">
+                      <button class="editor-tool-btn" id="btn-format-code" title="จัดรูปแบบโค้ด (Format Indentation)">
+                        <i class="fa-solid fa-align-left"></i>
+                      </button>
+                      <button class="editor-tool-btn" id="btn-copy-code" title="คัดลอกโค้ด">
+                        <i class="fa-regular fa-copy"></i>
+                      </button>
+                      <button class="editor-tool-btn" id="btn-reset-code" title="รีเซ็ตโค้ดกลับเป็นค่าเริ่มต้น">
+                        <i class="fa-solid fa-rotate-left"></i>
+                      </button>
+                      <button class="editor-tool-btn" id="btn-clear-code" title="ล้างโค้ดทั้งหมด">
+                        <i class="fa-regular fa-trash-can"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Code Editor Container with Line Numbers, Synced Highlights & Ghost Text -->
+                  <div class="code-editor-shell">
+                    <div class="editor-gutter" id="editor-gutter">
+                      <div>1</div>
+                    </div>
+                    
+                    <div class="editor-textarea-wrap">
+                      <!-- Ghost Text Overlay for Tab Autocompletion -->
+                      <pre class="editor-ghost-overlay" id="editor-ghost-overlay" aria-hidden="true"></pre>
+                      
+                      <!-- Real Textarea Input -->
+                      <textarea class="editor-textarea" id="editor-code-input" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="เขียนโค้ดของคุณที่นี่... (กด TAB เพื่อรับคำแนะนำ Auto-Completion)"></textarea>
+                      
+                      <!-- Floating Autocomplete Suggestion Dropdown -->
+                      <div class="autocomplete-dropdown hidden" id="autocomplete-dropdown">
+                        <!-- Populated by AutocompleteSystem -->
+                      </div>
+
+                      <!-- Hover Tooltip Documentation -->
+                      <div class="hover-doc-tooltip hidden" id="hover-doc-tooltip">
+                        <div class="doc-title" id="hover-doc-title">print()</div>
+                        <div class="doc-desc" id="hover-doc-desc">Output values to console</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Auto-completion Tip Bar -->
+                  <div class="editor-status-bar">
+                    <div class="status-left">
+                      <span class="key-tip"><kbd>TAB</kbd> รับ Auto-Complete / Indent</span>
+                      <span class="key-tip"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> สั่งรันโค้ด</span>
+                    </div>
+                    <div class="status-right" id="editor-cursor-pos">
+                      Line 1, Col 1
+                    </div>
+                  </div>
+
+                  <!-- Editor Controls: Run & Submit -->
+                  <div class="editor-execution-bar">
+                    <button class="btn btn-primary" id="btn-run-code">
+                      <i class="fa-solid fa-play"></i> รันโค้ด (Run Code)
+                    </button>
+                    <div class="exec-info" id="exec-status-info">
+                      พร้อมรันโค้ด (Frontend Simulator)
+                    </div>
+                  </div>
+
+                  <!-- Terminal / Console Output Box -->
+                  <div class="terminal-output-card">
+                    <div class="terminal-tabs">
+                      <button class="term-tab active" data-term-tab="console"><i class="fa-solid fa-terminal"></i> Output Console</button>
+                      <button class="term-tab" data-term-tab="tests"><i class="fa-solid fa-vial"></i> Test Verification</button>
+                      <button class="term-tab hidden" id="term-tab-preview-btn" data-term-tab="preview"><i class="fa-solid fa-eye"></i> CSS Live Preview</button>
+                      <button class="term-clear-btn" id="btn-clear-term" title="ล้างผลลัพธ์ Terminal"><i class="fa-solid fa-ban"></i></button>
+                    </div>
+
+                    <!-- Console Tab -->
+                    <div class="terminal-body" id="term-console-panel">
+                      <div class="term-line prompt-line">
+                        <span class="term-prefix">&gt;</span> <span class="term-muted">ผลลัพธ์การรันโค้ดจะแสดงที่นี่...</span>
+                      </div>
+                    </div>
+
+                    <!-- Test Verification Tab -->
+                    <div class="terminal-body hidden" id="term-tests-panel">
+                      <div class="test-results-summary" id="test-results-summary">
+                        ยังไม่มีผลการทดสอบ กด &quot;รันโค้ด&quot; เพื่อตรวจสอบ
+                      </div>
+                      <div class="test-cases-list" id="test-cases-list">
+                        <!-- Dynamically filled with test case checkmarks/crosses -->
+                      </div>
+                    </div>
+
+                    <!-- CSS Live Preview Tab -->
+                    <div class="terminal-body hidden" id="term-preview-panel">
+                      <div class="css-preview-container">
+                        <div class="preview-description">ผลลัพธ์จากการเรนเดอร์ CSS ของคุณ:</div>
+                        <div class="css-sandbox" id="css-sandbox">
+                          <div class="sandbox-box" id="sandbox-box">Box Element</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: CHALLENGES -->
+        <section class="view-panel" id="view-challenges">
+          <div class="view-header-bar">
+            <div>
+              <h1 class="view-title">Coding Challenges</h1>
+              <p class="view-sub">ท้าทายทักษะการเขียนโปรแกรมของคุณด้วยโจทย์หลากหลายระดับ รับ XP และโบนัสเมื่อทำสำเร็จโดยไม่ใช้ Hint!</p>
+            </div>
+            
+            <!-- Filters -->
+            <div class="challenge-filters-wrap">
+              <!-- Filter by Language -->
+              <div class="filter-group">
+                <label><i class="fa-solid fa-code"></i> ภาษา:</label>
+                <select id="challenge-filter-lang" class="custom-select">
+                  <option value="all">ทุกวิชา/ภาษา (All)</option>
+                  <option value="python">Python (06066303)</option>
+                  <option value="math_it">Math for IT (06016401)</option>
+                  <option value="c">C</option>
+                  <option value="cpp">C++</option>
+                  <option value="csharp">C#</option>
+                  <option value="lua">Lua</option>
+                  <option value="java">Java</option>
+                  <option value="css">CSS</option>
+                </select>
+              </div>
+
+              <!-- Filter by Difficulty -->
+              <div class="filter-group">
+                <label><i class="fa-solid fa-signal"></i> ระดับ:</label>
+                <select id="challenge-filter-diff" class="custom-select">
+                  <option value="all">ทุกระดับ (All)</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Challenge List Grid -->
+          <div class="challenges-grid" id="challenges-grid">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Challenge Workspace Modal / Drawer (when challenge is active) -->
+          <div class="modal-overlay hidden" id="challenge-modal">
+            <div class="modal-container challenge-modal-container">
+              <div class="modal-header">
+                <div class="modal-title-group">
+                  <span class="tag-pill" id="modal-chal-diff">Easy</span>
+                  <span class="tag-pill lang-tag" id="modal-chal-lang">Python</span>
+                  <h3 id="modal-chal-title">ตรวจสอบเลขคู่หรือเลขคี่ (Even or Odd)</h3>
+                </div>
+                <button class="modal-close-btn" id="modal-chal-close"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+
+              <div class="modal-body modal-split-grid">
+                <!-- Left: Problem Description & Hints -->
+                <div class="modal-chal-left">
+                  <div class="chal-desc-block">
+                    <h4><i class="fa-solid fa-align-left"></i> รายละเอียดโจทย์</h4>
+                    <p id="modal-chal-desc">เขียนฟังก์ชันตรวจสอบตัวเลข...</p>
+                  </div>
+
+                  <div class="chal-io-block">
+                    <h4><i class="fa-solid fa-right-left"></i> ตัวอย่าง Input / Output</h4>
+                    <div class="io-sample">
+                      <div><strong>Input:</strong> <code id="modal-chal-input">num = 4</code></div>
+                      <div><strong>Output:</strong> <code id="modal-chal-output">&quot;Even&quot;</code></div>
+                    </div>
+                  </div>
+
+                  <!-- Hint Section -->
+                  <div class="chal-hint-block">
+                    <div class="hint-header">
+                      <h4><i class="fa-solid fa-lightbulb"></i> คำใบ้ (Hints)</h4>
+                      <span class="hint-cost-note">การเปิด Hint จะหัก XP บางส่วน</span>
+                    </div>
+                    <div class="hint-list" id="modal-chal-hints">
+                      <!-- Dynamically populated hint tiers -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right: Challenge Code Editor -->
+                <div class="modal-chal-right">
+                  <div class="modal-editor-toolbar">
+                    <span class="text-muted"><i class="fa-solid fa-keyboard"></i> เขียนโค้ดแก้ไขโจทย์:</span>
+                    <button class="btn btn-outline btn-xs" id="btn-modal-reset-code"><i class="fa-solid fa-rotate-left"></i> คืนค่าเริ่มต้น</button>
+                  </div>
+
+                  <div class="modal-editor-wrap">
+                    <textarea class="modal-code-textarea" id="modal-code-input" spellcheck="false"></textarea>
+                  </div>
+
+                  <div class="modal-test-output-box" id="modal-test-output">
+                    <div class="test-header"><i class="fa-solid fa-vial"></i> ผลการทดสอบ Test Cases:</div>
+                    <div class="test-results-body" id="modal-test-results-body">
+                      กด &quot;ส่งคำตอบ (Submit Answer)&quot; เพื่อเริ่มการตรวจคำตอบ
+                    </div>
+                  </div>
+
+                  <div class="modal-footer-actions">
+                    <div class="reward-preview">
+                      <span class="xp-val" id="modal-chal-reward">+100 XP</span>
+                      <span class="combo-val" id="modal-chal-combo">+ Combo Bonus!</span>
+                    </div>
+                    <div class="action-btns">
+                      <button class="btn btn-outline" id="btn-modal-test-run"><i class="fa-solid fa-play"></i> ทดสอบโค้ด</button>
+                      <button class="btn btn-emerald" id="btn-modal-submit"><i class="fa-solid fa-paper-plane"></i> ส่งคำตอบ (Submit)</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: LANGUAGES -->
+        <section class="view-panel" id="view-languages">
+          <div class="view-header-bar">
+            <div>
+              <h1 class="view-title">เลือกภาษาโปรแกรม (Programming Languages)</h1>
+              <p class="view-sub">เลือกภาษาที่คุณต้องการศึกษาเพื่อดูโครงสร้างหลักสูตรและเริ่มลงมือปฏิบัติ</p>
+            </div>
+          </div>
+
+          <div class="languages-cards-grid" id="languages-cards-grid">
+            <!-- Dynamically populated 7 language cards -->
+          </div>
+        </section>
+
+        <!-- VIEW 5: LEADERBOARD -->
+        <section class="view-panel" id="view-leaderboard">
+          <div class="view-header-bar">
+            <div>
+              <h1 class="view-title">Leaderboard กระดานผู้นำ</h1>
+              <p class="view-sub">จัดอันดับยอดนักพัฒนาตามคะแนน XP และระดับ Level ร่วมแข่งขันกับผู้เรียนคนอื่น!</p>
+            </div>
+            <div class="leaderboard-tabs">
+              <button class="tab-btn active" data-lb-tab="weekly">สัปดาห์นี้ (Weekly)</button>
+              <button class="tab-btn" data-lb-tab="alltime">ตลอดกาล (All Time)</button>
+            </div>
+          </div>
+
+          <!-- Top 3 Podium -->
+          <div class="leaderboard-podium" id="leaderboard-podium">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- User's Current Standing Card -->
+          <div class="user-standing-card" id="user-standing-card">
+            <div class="standing-rank">อันดับของคุณ: <strong id="user-standing-rank">#4</strong></div>
+            <div class="standing-details">
+              <span class="standing-avatar" id="user-standing-avatar">🚀</span>
+              <span class="standing-name" id="user-standing-name">CodeVoyager (คุณ)</span>
+              <span class="standing-level" id="user-standing-level">LV 1</span>
+            </div>
+            <div class="standing-xp" id="user-standing-xp">120 XP</div>
+          </div>
+
+          <!-- Full Table -->
+          <div class="leaderboard-table-card">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th style="width: 80px;">อันดับ</th>
+                  <th>ผู้ใช้งาน</th>
+                  <th>ระดับ (Level)</th>
+                  <th>Streak</th>
+                  <th style="text-align: right;">คะแนน XP</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- VIEW 6: ACHIEVEMENTS -->
+        <section class="view-panel" id="view-achievements">
+          <div class="view-header-bar">
+            <div>
+              <h1 class="view-title">เหรียญความสำเร็จ (Achievements)</h1>
+              <p class="view-sub">สะสมเหรียญรางวัลจากการเรียนรู้ การทำโจทย์ การสร้างคอมโบ และการรักษา Streak!</p>
+            </div>
+            <div class="achievement-counter-badge" id="achievement-counter-badge">
+              ปลดล็อกแล้ว: 0 / 10
+            </div>
+          </div>
+
+          <div class="achievements-grid" id="achievements-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- VIEW 7: PROFILE -->
+        <section class="view-panel" id="view-profile">
+          <div class="profile-hero-card">
+            <div class="profile-avatar-large-wrap">
+              <div class="profile-avatar-large" id="profile-avatar-display">🚀</div>
+              <button class="change-avatar-btn" id="btn-change-avatar" title="เปลี่ยนไอคอน Avatar">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+            </div>
+            <div class="profile-info-group">
+              <div class="profile-name-row">
+                <h2 id="profile-username">CodeVoyager</h2>
+                <button class="edit-name-btn" id="btn-edit-username" title="แก้ไขชื่อผู้ใช้"><i class="fa-solid fa-pen-to-square"></i></button>
+              </div>
+              <div class="profile-role-title" id="profile-role-title">Novice Coder</div>
+              <div class="profile-joined-text">สมาชิกแพลตฟอร์มการเรียนรู้ TutorCode</div>
+            </div>
+            <div class="profile-badge-pill" id="profile-level-badge">LEVEL 1</div>
+          </div>
+
+          <!-- Profile Stats Overview -->
+          <div class="stats-metrics-grid">
+            <div class="stat-card">
+              <div class="stat-icon-wrap cyan"><i class="fa-solid fa-bolt"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Total XP</div>
+                <div class="stat-value" id="prof-stat-xp">0</div>
+                <div class="stat-meta">คะแนนสะสมทั้งหมด</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap orange"><i class="fa-solid fa-fire"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Daily Streak</div>
+                <div class="stat-value" id="prof-stat-streak">1 วัน</div>
+                <div class="stat-meta">ทำต่อเนื่องทุกวัน</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap emerald"><i class="fa-solid fa-graduation-cap"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Completed Lessons</div>
+                <div class="stat-value" id="prof-stat-lessons">0</div>
+                <div class="stat-meta">บทเรียนที่ผ่านแล้ว</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon-wrap purple"><i class="fa-solid fa-code-commit"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Code Executions</div>
+                <div class="stat-value" id="prof-stat-runs">0</div>
+                <div class="stat-meta">จำนวนครั้งที่รันโค้ด</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Mastery Grid in Profile -->
+          <div class="dashboard-card" style="margin-top: 1.5rem;">
+            <div class="card-header-flex">
+              <div class="card-title-group">
+                <span class="special-badge cyan"><i class="fa-solid fa-brain"></i> SKILL BREAKDOWN</span>
+                <h3>ความเชี่ยวชาญตามภาษา</h3>
+              </div>
+            </div>
+            <div class="language-mastery-list" id="profile-lang-mastery-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 8: SETTINGS -->
+        <section class="view-panel" id="view-settings">
+          <div class="view-header-bar">
+            <div>
+              <h1 class="view-title">การตั้งค่า (Settings)</h1>
+              <p class="view-sub">ปรับแต่งประสบการณ์การใช้งาน และการจัดการข้อมูล LocalStorage</p>
+            </div>
+          </div>
+
+          <div class="settings-card-stack">
+            <!-- Audio Settings -->
+            <div class="settings-card">
+              <div class="settings-item">
+                <div class="settings-item-info">
+                  <div class="setting-title"><i class="fa-solid fa-volume-high"></i> เสียงเอฟเฟกต์ (Sound Effects)</div>
+                  <div class="setting-desc">เปิดใช้งานเสียงสังเคราะห์เมื่อ Level Up, ตอบถูก หรือรับ XP (ใช้ Web Audio API ไม่ต้องโหลดไฟล์ภายนอก)</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="setting-sound-toggle" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Editor Settings -->
+            <div class="settings-card">
+              <div class="settings-item">
+                <div class="settings-item-info">
+                  <div class="setting-title"><i class="fa-solid fa-table-cells-large"></i> Tab Indentation Size</div>
+                  <div class="setting-desc">เลือกจำนวนช่องว่างเมื่อกดปุ่ม TAB ใน Code Editor</div>
+                </div>
+                <select id="setting-tab-size" class="custom-select" style="width: 140px;">
+                  <option value="2">2 Spaces</option>
+                  <option value="4" selected>4 Spaces</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Execution Mode Info -->
+            <div class="settings-card">
+              <div class="settings-item">
+                <div class="settings-item-info">
+                  <div class="setting-title"><i class="fa-solid fa-server"></i> Code Execution Engine</div>
+                  <div class="setting-desc">โหมดการประมวลผลโค้ดปัจจุบัน: Client-side AST/Simulation Sandbox (ออกแบบพร้อมเชื่อมโยง Judge0 / Piston / Gemini Backend ในอนาคต)</div>
+                </div>
+                <span class="tag-pill" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">
+                  <i class="fa-solid fa-check-circle"></i> Pure Frontend
+                </span>
+              </div>
+            </div>
+
+            <!-- Reset Data Zone -->
+            <div class="settings-card danger-zone">
+              <div class="settings-item">
+                <div class="settings-item-info">
+                  <div class="setting-title danger-text"><i class="fa-solid fa-triangle-exclamation"></i> รีเซ็ตข้อมูลทั้งหมด (Reset Progress)</div>
+                  <div class="setting-desc">ล้างประวัติการเรียน, คะแนน XP, Streak และความสำเร็จทั้งหมดใน LocalStorage และเริ่มใหม่</div>
+                </div>
+                <button class="btn btn-danger" id="btn-reset-data">
+                  <i class="fa-solid fa-trash-can"></i> รีเซ็ตข้อมูล
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav mobile-only">
+    <button class="mob-nav-item active" data-view="dashboard">
+      <i class="fa-solid fa-gauge-high"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="mob-nav-item" data-view="learn">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <span>Learn</span>
+    </button>
+    <button class="mob-nav-item" data-view="challenges">
+      <i class="fa-solid fa-puzzle-piece"></i>
+      <span>Challenges</span>
+    </button>
+    <button class="mob-nav-item" data-view="languages">
+      <i class="fa-solid fa-cubes"></i>
+      <span>Langs</span>
+    </button>
+    <button class="mob-nav-item" data-view="profile">
+      <i class="fa-solid fa-circle-user"></i>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <!-- MODAL: SEARCH (Ctrl + K) -->
+  <div class="modal-overlay hidden" id="search-modal">
+    <div class="modal-container search-modal-container">
+      <div class="search-input-wrap">
+        <i class="fa-solid fa-magnifying-glass search-modal-icon"></i>
+        <input type="text" id="search-modal-input" placeholder="พิมพ์ชื่อภาษา, บทเรียน, หรือโจทย์ เช่น 'loop', 'print', 'flexbox'..." autocomplete="off">
+        <kbd class="shortcut-key">ESC เพื่อปิด</kbd>
+      </div>
+      <div class="search-results-list" id="search-results-list">
+        <div class="search-empty-prompt">เริ่มพิมพ์เพื่อค้นหาเนื้อหาในระบบ...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: LEVEL UP CELEBRATION -->
+  <div class="modal-overlay hidden" id="levelup-modal">
+    <div class="modal-container levelup-modal-container">
+      <div class="levelup-burst-glow"></div>
+      <div class="levelup-icon-circle">
+        <i class="fa-solid fa-crown"></i>
+      </div>
+      <div class="levelup-badge-sub">CONGRATULATIONS!</div>
+      <h2 class="levelup-heading">LEVEL UP!</h2>
+      <div class="levelup-num-display" id="modal-levelup-num">LEVEL 2</div>
+      <div class="levelup-role-display" id="modal-levelup-role">Novice Coder</div>
+      <p class="levelup-msg">ยินดีด้วย! คุณสะสม XP ได้ตามเป้าหมายและปลดล็อกระดับใหม่ พร้อมรับโบนัสทักษะและการเรียนรู้ที่เข้มข้นขึ้น!</p>
+      
+      <div class="levelup-rewards-box">
+        <div class="levelup-reward-item">
+          <i class="fa-solid fa-award"></i>
+          <span>ปลดล็อกโจทย์ระดับถัดไป</span>
+        </div>
+        <div class="levelup-reward-item">
+          <i class="fa-solid fa-bolt"></i>
+          <span>โบนัส Combo x1.5</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-lg" id="btn-close-levelup">
+        <i class="fa-solid fa-fire"></i> ลุยต่อเลย! (Continue Coding)
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: HINT CONFIRMATION -->
+  <div class="modal-overlay hidden" id="hint-confirm-modal">
+    <div class="modal-container hint-modal-container">
+      <div class="hint-modal-icon"><i class="fa-solid fa-lightbulb"></i></div>
+      <h3>ต้องการเปิดคำใบ้ใช่หรือไม่?</h3>
+      <p id="hint-confirm-text">การเปิดคำใบ้ระดับ 1 จะหัก <strong>10 XP</strong> จากคะแนนของคุณ</p>
+      <div class="hint-confirm-actions">
+        <button class="btn btn-outline" id="btn-hint-cancel">ยกเลิก (คิดเองต่อ)</button>
+        <button class="btn btn-gold" id="btn-hint-accept"><i class="fa-solid fa-unlock"></i> ยอมรับและเปิดคำใบ้</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Main Application Script -->
+  <script src="script.js"></script>
+</body>
+</html>
